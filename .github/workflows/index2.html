@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ganesh Lottery - Official Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 10px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Header with Goddess Image */
+        .header-image {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+            background: linear-gradient(180deg, #8b0000 0%, #dc143c 100%);
+        }
+
+        .header-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .header-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, #00d4ff, #0099cc);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* Online Users Counter */
+        .online-users {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 8px 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .online-users::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #00ff00;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Countdown Timer Box */
+        .timer-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 3px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .timer-title {
+            background: linear-gradient(to right, #ffd700, #ffed4e);
+            color: #1a1a2e;
+            padding: 10px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .result-container {
+            margin: 25px 0;
+        }
+
+        .result-label {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-number {
+            font-size: 64px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            display: inline-block;
+            min-width: 140px;
+        }
+
+        .timer-time {
+            background: linear-gradient(to right, #00d4ff, #0099cc);
+            color: white;
+            padding: 10px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .result-time {
+            color: #ffd700;
+            font-size: 12px;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Results Table */
+        .results-table {
+            background: white;
+            border: 3px solid #00d4ff;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .results-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table th {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 8px 5px;
+            font-size: 11px;
+            border: 1px solid white;
+        }
+
+        .results-table td {
+            padding: 8px 5px;
+            text-align: center;
+            font-size: 11px;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .results-table td:first-child {
+            background: linear-gradient(to right, #00d4ff, #0099cc);
+            color: white;
+            font-weight: bold;
+        }
+
+        .results-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .result-display {
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: bold;
+            min-width: 50px;
+        }
+
+        .result-waiting {
+            background: #cccccc;
+            color: #666;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* Flickering animation for new results */
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .flickering {
+            animation: flicker 1.5s ease-in-out infinite;
+        }
+
+        /* Chart Table */
+        .chart-section {
+            background: white;
+            border: 3px solid #00d4ff;
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .chart-header {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .month-selector {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .month-selector select {
+            padding: 5px 10px;
+            border: 2px solid #00d4ff;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .chart-table {
+            width: 100%;
+            font-size: 9px;
+            border-collapse: collapse;
+        }
+
+        .chart-table th {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 5px 2px;
+            border: 1px solid white;
+            font-size: 8px;
+        }
+
+        .chart-table td {
+            padding: 4px 2px;
+            text-align: center;
+            border: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .chart-table td:first-child {
+            background: linear-gradient(to right, #00d4ff, #0099cc);
+            color: white;
+        }
+
+        /* Winning Jodi */
+        .jodi-section {
+            background: white;
+            border: 3px solid #00d4ff;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .jodi-header {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .jodi-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+        }
+
+        .jodi-item {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Admin Panel */
+        .admin-trigger {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s;
+        }
+
+        .admin-trigger:hover {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .admin-content {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .close-admin {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .close-admin:hover {
+            background: linear-gradient(to right, #764ba2, #667eea);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-update {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .btn-update:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 100px auto;
+        }
+
+        .admin-main {
+            display: none;
+        }
+
+        .section-divider {
+            margin: 25px 0 15px 0;
+            padding: 12px;
+            background: linear-gradient(to right, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 15px;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .timestamp-section {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 5px;
+        }
+        
+        .timestamp-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .timestamp-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Goddess Image -->
+        <div class="header-image">
+            <img src="ganesh.jpg" alt="Ganesh">
+            <div class="header-title">GANESHLOTTERY</div>
+        </div>
+
+        <!-- Online Users Counter -->
+        <div class="online-users" id="onlineUsers">
+            Online: 2250
+        </div>
+
+        <!-- Timer Box -->
+        <div class="timer-box">
+            <div class="timer-title">GANESH LOTTERY</div>
+            <div class="result-container">
+                <div class="result-label">Latest Result</div>
+                <div class="result-number" id="countdown">--</div>
+                <div class="result-time" id="latestResultTime">--</div>
+            </div>
+            <div class="timer-time" id="currentTime">00:00:00</div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="results-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Draw Name</th>
+                        <th>Time</th>
+                        <th>Old</th>
+                        <th>New</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                    <tr>
+                        <td>1</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>08:00 AM</td>
+                        <td><span class="result-display" id="old-result-0">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-0">wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>09:00 AM</td>
+                        <td><span class="result-display" id="old-result-1">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-1">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>10:00 AM</td>
+                        <td><span class="result-display" id="old-result-2">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-2">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>11:00 AM</td>
+                        <td><span class="result-display" id="old-result-3">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-3">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>12:00 PM</td>
+                        <td><span class="result-display" id="old-result-4">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-4">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>01:00 PM</td>
+                        <td><span class="result-display" id="old-result-5">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-5">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>02:00 PM</td>
+                        <td><span class="result-display" id="old-result-6">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-6">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>03:00 PM</td>
+                        <td><span class="result-display" id="old-result-7">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-7">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>04:00 PM</td>
+                        <td><span class="result-display" id="old-result-8">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-8">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>05:00 PM</td>
+                        <td><span class="result-display" id="old-result-9">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-9">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>06:00 PM</td>
+                        <td><span class="result-display" id="old-result-10">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-10">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>07:00 PM</td>
+                        <td><span class="result-display" id="old-result-11">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-11">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>13</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>08:00 PM</td>
+                        <td><span class="result-display" id="old-result-12">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-12">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>09:00 PM</td>
+                        <td><span class="result-display" id="old-result-13">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-13">Wait</span></td>
+                    </tr>
+                    <tr>
+                        <td>15</td>
+                        <td>GANESH LOTTERY</td>
+                        <td>10:00 PM</td>
+                        <td><span class="result-display" id="old-result-14">--</span></td>
+                        <td><span class="result-waiting flickering" id="result-14">Wait</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <div class="chart-header">GANESH Lottery Chart</div>
+            <div class="month-selector">
+                <select id="monthSelect">
+                    <option>Jan ▼</option>
+                    <option>Feb</option>
+                    <option>Mar</option>
+                    <option>Apr</option>
+                    <option>May</option>
+                    <option>Jun</option>
+                    <option>Jul</option>
+                    <option>Aug</option>
+                    <option>Sep</option>
+                    <option selected>Oct</option>
+                    <option>Nov</option>
+                    <option>Dec</option>
+                </select>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="chart-table" id="chartTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>8AM</th>
+                            <th>9AM</th>
+                            <th>10AM</th>
+                            <th>11AM</th>
+                            <th>12PM</th>
+                            <th>1PM</th>
+                            <th>2PM</th>
+                            <th>3PM</th>
+                            <th>4PM</th>
+                            <th>5PM</th>
+                            <th>6PM</th>
+                            <th>7PM</th>
+                            <th>8PM</th>
+                            <th>9PM</th>
+                            <th>10PM</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chartTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Winning Jodi -->
+        <div class="jodi-section">
+            <div class="jodi-header">Winning Jodi</div>
+            <div class="jodi-grid">
+                <div class="jodi-item">12</div>
+                <div class="jodi-item">23</div>
+                <div class="jodi-item">34</div>
+                <div class="jodi-item">45</div>
+                <div class="jodi-item">56</div>
+                <div class="jodi-item">67</div>
+                <div class="jodi-item">78</div>
+                <div class="jodi-item">89</div>
+                <div class="jodi-item">90</div>
+                <div class="jodi-item">01</div>
+                <div class="jodi-item">13</div>
+                <div class="jodi-item">24</div>
+                <div class="jodi-item">35</div>
+                <div class="jodi-item">46</div>
+                <div class="jodi-item">57</div>
+                <div class="jodi-item">68</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visible Admin Trigger -->
+    <button class="admin-trigger" onclick="showAdminLogin()" title="Admin Panel"></button>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-content">
+            <div class="login-form" id="loginForm">
+                <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">🔐 Admin Login</h2>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="adminUsername" placeholder="Enter username" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPassword" placeholder="Enter password" autocomplete="current-password">
+                </div>
+                <button class="btn-update" onclick="adminLogin()">Login</button>
+                <button class="close-admin" onclick="closeAdmin()" style="width: 100%; margin-top: 10px;">Cancel</button>
+            </div>
+
+            <div class="admin-main" id="adminMain">
+                <div class="admin-header">
+                    <h2 style="color: #667eea;">📊 Update Results</h2>
+                    <button class="close-admin" onclick="closeAdmin()">✖ Close</button>
+                </div>
+
+                <div id="adminFormsContainer"></div>
+
+                <div class="timestamp-section">
+                    <div class="timestamp-label">Last Updated Time:</div>
+                    <div class="timestamp-value" id="lastUpdatedTime">--</div>
+                </div>
+
+                <button class="btn-update" onclick="updateResults()">💾 Update All Results</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize results data for 15 draws
+        let results = [];
+        let oldResults = [];
+        let resultTimestamps = [];
+        let latestResultTimestamp = '';
+        
+        for (let i = 0; i < 15; i++) {
+            results.push('');
+            oldResults.push('');
+            resultTimestamps.push('');
+        }
+
+        const drawTimes = ['08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', 
+                          '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM',
+                          '06:00 PM', '07:00 PM', '08:00 PM', '09:00 PM', '10:00 PM'];
+
+        // Update online users counter
+        function updateOnlineUsers() {
+            const minUsers = 2000;
+            const maxUsers = 2500;
+            const randomUsers = Math.floor(Math.random() * (maxUsers - minUsers + 1)) + minUsers;
+            document.getElementById('onlineUsers').textContent = `Online: ${randomUsers}`;
+        }
+
+        // Update Indian Standard Time (IST)
+        function updateISTTime() {
+            const now = new Date();
+            const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+            const istTime = new Date(now.getTime() + istOffset + (now.getTimezoneOffset() * 60 * 1000));
+            
+            const hours = istTime.getHours().toString().padStart(2, '0');
+            const minutes = istTime.getMinutes().toString().padStart(2, '0');
+            const seconds = istTime.getSeconds().toString().padStart(2, '0');
+            
+            document.getElementById('currentTime').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Format timestamp for display
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return '--';
+            
+            const date = new Date(timestamp);
+            const options = { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+            
+            return date.toLocaleString('en-IN', options);
+        }
+
+        // Update result display
+        function updateResultDisplay() {
+            for (let i = 0; i < 15; i++) {
+                const newElem = document.getElementById(`result-${i}`);
+                const oldElem = document.getElementById(`old-result-${i}`);
+                
+                // Update old result
+                if (oldResults[i] && oldResults[i] !== '') {
+                    oldElem.className = 'result-display';
+                    oldElem.textContent = oldResults[i];
+                } else {
+                    oldElem.className = 'result-display';
+                    oldElem.textContent = '--';
+                }
+                
+                // Update new result with flickering
+                if (results[i] && results[i] !== '') {
+                    newElem.className = 'result-display flickering';
+                    newElem.textContent = results[i];
+                } else {
+                    newElem.className = 'result-waiting flickering';
+                    newElem.textContent = 'Waiting';
+                }
+            }
+        }
+
+        // Generate chart data for 31 days
+        function generateChartData() {
+            const tbody = document.getElementById('chartTableBody');
+            tbody.innerHTML = '';
+            
+            for (let day = 1; day <= 31; day++) {
+                const row = document.createElement('tr');
+                const dateCell = document.createElement('td');
+                dateCell.textContent = day;
+                row.appendChild(dateCell);
+
+                for (let draw = 0; draw < 15; draw++) {
+                    const cell = document.createElement('td');
+                    cell.textContent = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+                    row.appendChild(cell);
+                }
+                tbody.appendChild(row);
+            }
+        }
+
+        // Update pot number with latest result
+        function updatePotNumber() {
+            const latestResult = results.filter(r => r !== '').pop();
+            document.getElementById('countdown').textContent = latestResult ? latestResult : '--';
+            
+            // Update the latest result timestamp
+            if (latestResultTimestamp) {
+                document.getElementById('latestResultTime').textContent = `Updated: ${formatTimestamp(latestResultTimestamp)}`;
+            } else {
+                document.getElementById('latestResultTime').textContent = '--';
+            }
+        }
+
+        // Admin functions
+        function showAdminLogin() {
+            document.getElementById('adminPanel').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminMain').style.display = 'none';
+            document.getElementById('adminUsername').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function adminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+
+            if (username === 'admin' && password === 'ganesh2025') {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminMain').style.display = 'block';
+                loadAdminForm();
+            } else {
+                alert('❌ Invalid credentials! Please try again.');
+            }
+        }
+
+        function loadAdminForm() {
+            const container = document.getElementById('adminFormsContainer');
+            container.innerHTML = '';
+
+            drawTimes.forEach((time, index) => {
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <div class="section-divider">${time} Draw</div>
+                    <div class="admin-grid">
+                        <div class="form-group">
+                            <label>Old Result</label>
+                            <input type="text" id="admin-old-result-${index}" maxlength="2" value="${oldResults[index]}" placeholder="00">
+                        </div>
+                        <div class="form-group">
+                            <label>New Result</label>
+                            <input type="text" id="admin-result-${index}" maxlength="2" value="${results[index]}" placeholder="00">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+            
+            // Update the last updated time display
+            document.getElementById('lastUpdatedTime').textContent = latestResultTimestamp ? 
+                formatTimestamp(latestResultTimestamp) : '--';
+        }
+
+        function updateResults() {
+            let updated = 0;
+            const now = new Date();
+            
+            drawTimes.forEach((time, index) => {
+                const oldValue = document.getElementById(`admin-old-result-${index}`).value.trim();
+                const newValue = document.getElementById(`admin-result-${index}`).value.trim();
+                
+                if (oldValue !== '') {
+                    oldResults[index] = oldValue.padStart(2, '0');
+                    updated++;
+                } else {
+                    oldResults[index] = '';
+                }
+                
+                if (newValue !== '') {
+                    results[index] = newValue.padStart(2, '0');
+                    resultTimestamps[index] = now.toISOString();
+                    updated++;
+                } else {
+                    results[index] = '';
+                    resultTimestamps[index] = '';
+                }
+            });
+
+            // Set the latest result timestamp
+            if (updated > 0) {
+                latestResultTimestamp = now.toISOString();
+            }
+
+            updateResultDisplay();
+            updatePotNumber();
+            alert(`✅ ${updated} result(s) updated successfully!`);
+            closeAdmin();
+        }
+
+        // Initialize
+        updateOnlineUsers();
+        generateChartData();
+        updateResultDisplay();
+        updatePotNumber();
+        
+        // Update IST time every second
+        updateISTTime();
+        setInterval(updateISTTime, 1000);
+        
+        // Update online users every 5 seconds
+        setInterval(updateOnlineUsers, 5000);
+    </script>
+</body>
+</html>
